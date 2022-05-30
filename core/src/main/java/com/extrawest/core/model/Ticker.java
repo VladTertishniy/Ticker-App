@@ -2,7 +2,8 @@ package com.extrawest.core.model;
 
 import lombok.*;
 
-import java.util.ArrayList;
+import java.time.Duration;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,7 +14,9 @@ public class Ticker {
 
     private int id;
     private Status status;
-    private int tickInterval;
-    private ArrayList ticks;
+    private Duration tickInterval;
+    private Set<Tick> ticks;
+    private User owner;
+    private boolean isEnabled;
 
 }
