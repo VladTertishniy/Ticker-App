@@ -1,6 +1,8 @@
 package com.extrawest.core.model;
 
 import lombok.*;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
@@ -9,9 +11,10 @@ import java.util.Date;
 @Getter
 @Setter
 @EqualsAndHashCode
+@Document(collection = "ticksHistory")
 public class TicksHistory {
 
-    private int id;
+    private ObjectId id;
     private Date timestamp;
     private Side side;
     private int currentInterval;
