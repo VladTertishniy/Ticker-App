@@ -5,6 +5,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.util.Collection;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -19,6 +20,7 @@ public class TicksHistory {
     private ObjectId id;
     private Date timestamp;
     private Side side;
+    private Ticker relatedTicker;
     private int currentInterval;
 
 }
