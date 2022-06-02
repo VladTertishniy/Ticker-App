@@ -3,6 +3,7 @@ package com.extrawest.core.model;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.Date;
 
@@ -14,6 +15,7 @@ import java.util.Date;
 @Document(collection = "ticksHistory")
 public class TicksHistory {
 
+    @MongoId
     private ObjectId id;
     private Date timestamp;
     private Side side;
