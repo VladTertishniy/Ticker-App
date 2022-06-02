@@ -1,14 +1,13 @@
 package com.extrawest.core.controllers;
 
-import com.extrawest.core.dto.LoginDTO;
-import com.extrawest.core.dto.SignUpDTO;
+import com.extrawest.core.dto.auth.LoginDTO;
+import com.extrawest.core.dto.auth.SignUpDTO;
 import com.extrawest.core.model.Role;
 import com.extrawest.core.model.User;
 import com.extrawest.core.repository.RoleRepository;
 import com.extrawest.core.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +16,18 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @AllArgsConstructor
 public class AuthorizationController {
 
@@ -40,6 +46,13 @@ public class AuthorizationController {
         return new ResponseEntity<>("User signed-in successfully!.", HttpStatus.OK);
     }
 
+    @PostMapping("/signout")
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
+        securityContextLogoutHandler.logout(request, response, null);
+    }
+
+
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignUpDTO signUpDto){
 
@@ -54,14 +67,10 @@ public class AuthorizationController {
         user.setEmail(signUpDto.getEmail());
         user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
 
-        //тестовый говнокод
-        Role role1 = new Role();
-        role1.setName("ADMIN");
-        roleRepository.save(role1);
-        //конец тестового говна
-
-        Role role = roleRepository.findByName("ADMIN").get();
-        user.setRole(role);
+        Set<Role> roles = new HashSet<>();
+        Optional<Role> role = roleRepository.findByName("ROLE_ADMIN");
+        role.ifPresent(roles::add);
+        user.setRoles(roles);
 
         userRepository.save(user);
 
@@ -69,18 +78,8 @@ public class AuthorizationController {
 
     }
 
-    /*@RequestMapping(path = "/createUser", method = RequestMethod.POST)
-    public void createUser () {
-        User user = new User();
-        user.setEmail("aaaa");
-        user.setPassword("fffff");
-        user.setTickers(null);
-        mongoRepository.insert(user);
+    @RequestMapping(path = "/test/IsUserAuthorize", method = RequestMethod.POST)
+    public ResponseEntity<?> registerUser () {
+        return new ResponseEntity<>("test", HttpStatus.OK);
     }
-
-    @RequestMapping(path = "/authorizeUser", method = RequestMethod.POST)
-    public void registerUser () {
-
-    }*/
-
 }
