@@ -1,4 +1,4 @@
-package com.extrawest.core.dto.auth;
+package com.extrawest.core.dto;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.extrawest.core;
+package com.extrawest.core.security;
 
 import org.springframework.security.core.Authentication;
 

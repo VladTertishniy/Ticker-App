@@ -1,4 +1,4 @@
-package com.extrawest.core.dto.auth;
+package com.extrawest.core.dto;
 
 import com.extrawest.core.model.Role;
 import lombok.Data;

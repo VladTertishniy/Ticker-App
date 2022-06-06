@@ -1,6 +1,6 @@
 package com.extrawest.core.service;
 
-import com.extrawest.core.AuthenticationFacade;
+import com.extrawest.core.security.AuthenticationFacade;
 import com.extrawest.core.model.Ticker;
 import com.extrawest.core.model.User;
 import com.extrawest.core.repository.TickerRepository;

@@ -1,6 +1,7 @@
 package com.extrawest.core.controllers;
 
 import com.extrawest.core.service.TickerService;
+import com.extrawest.core.utility.PathConstants;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(PathConstants.API_PATH)
 @AllArgsConstructor
 public class TickerController {
 

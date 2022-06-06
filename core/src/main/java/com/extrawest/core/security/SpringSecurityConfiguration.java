@@ -1,5 +1,6 @@
-package com.extrawest.core.configuration;
+package com.extrawest.core.security;
 
+import com.extrawest.core.security.jwt.JWTConfig;
 import com.extrawest.core.service.TickerUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,9 +20,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final TickerUserDetailService tickerUserDetailService;
+    private final JWTConfig jwtConfigurer;
 
-    public SpringSecurityConfiguration(@Autowired TickerUserDetailService tickerUserDetailService) {
+    public SpringSecurityConfiguration(@Autowired TickerUserDetailService tickerUserDetailService,
+                                       @Autowired JWTConfig jwtConfigurer) {
         this.tickerUserDetailService = tickerUserDetailService;
+        this.jwtConfigurer = jwtConfigurer;
     }
 
     @Bean
@@ -35,13 +39,9 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers( "/auth/**").permitAll()
-                //.antMatchers(HttpMethod.POST, "/api/auth/signout").permitAll()
-                //.antMatchers(HttpMethod.POST, "/api/auth/test/").authenticated()
-                //.antMatchers("/api/auth/**").authenticated()//.permitAll()
-                //.antMatchers("/api/auth/**").authenticated()//.permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .httpBasic();
+                .apply(jwtConfigurer);
     }
 
     @Override
