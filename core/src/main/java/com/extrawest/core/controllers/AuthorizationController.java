@@ -1,8 +1,8 @@
 package com.extrawest.core.controllers;
 
-import com.extrawest.core.dto.AuthResponseDTO;
-import com.extrawest.core.dto.LoginDTO;
-import com.extrawest.core.dto.SignUpDTO;
+import com.extrawest.core.dto.auth.AuthResponseDTO;
+import com.extrawest.core.dto.auth.LoginDTO;
+import com.extrawest.core.dto.auth.SignUpDTO;
 import com.extrawest.core.service.AuthService;
 import com.extrawest.core.utility.PathConstants;
 import lombok.AllArgsConstructor;

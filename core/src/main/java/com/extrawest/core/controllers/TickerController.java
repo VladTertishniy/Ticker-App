@@ -23,8 +23,14 @@ public class TickerController {
         return new ResponseEntity<>("Ticker created", HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/getTickerById/{id}", method = RequestMethod.GET)
+    @GetMapping(path = "/getTickerById/{id}")
     public ResponseEntity<Ticker> getTickerById(@PathVariable ObjectId id) {
         return new ResponseEntity<>(tickerService.getTickerById(id).get(), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/startTickerById/{id}")
+    public ResponseEntity<?> startTickerById (@PathVariable ObjectId id) {
+        tickerService.startTicker(id);
+        return new ResponseEntity<>("Test", HttpStatus.OK); //todo
     }
 }

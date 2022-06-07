@@ -1,6 +1,7 @@
 package com.extrawest.core;
 
 import com.extrawest.core.configuration.FeignConfig;
+import com.extrawest.core.dto.feign.TickerFeignDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,10 +12,10 @@ path = "/tickers",
 configuration = FeignConfig.class)
 public interface TickerFeignClient {
 
-    /*@GetMapping("")
-    void start(@RequestBody TickerRemoteDto remoteDto);
+    @GetMapping("/start")
+    void start(@RequestBody TickerFeignDTO tickerFeignDTO);
 
-    @GetMapping("")
-    void stop(@RequestBody TickerRemoteDto remoteDto);*/
+    @GetMapping("/stop")
+    void stop(@RequestBody TickerFeignDTO tickerFeignDTO);
 
 }

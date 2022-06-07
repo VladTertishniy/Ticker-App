@@ -1,6 +1,6 @@
 package com.extrawest.core.service;
 
-import com.extrawest.core.dto.SignUpDTO;
+import com.extrawest.core.dto.auth.SignUpDTO;
 import com.extrawest.core.dto.mapper.UserMapper;
 import com.extrawest.core.model.User;
 import com.extrawest.core.repository.UserRepository;
