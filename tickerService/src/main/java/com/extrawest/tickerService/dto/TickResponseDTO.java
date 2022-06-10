@@ -4,7 +4,6 @@ import com.extrawest.tickerService.model.Side;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bson.types.ObjectId;
 
 import java.time.Duration;
 import java.util.Date;
