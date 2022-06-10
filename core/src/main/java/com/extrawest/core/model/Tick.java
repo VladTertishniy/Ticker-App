@@ -1,9 +1,8 @@
 package com.extrawest.core.model;
 
 import lombok.*;
-import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.Duration;
 
@@ -15,8 +14,8 @@ import java.time.Duration;
 @Document(collection = "ticks")
 public class Tick {
 
-    @MongoId
-    private ObjectId id;
+    @Id
+    private String id;
     private Side side;
     private Duration currentInterval;
 

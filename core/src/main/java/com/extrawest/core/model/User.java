@@ -2,6 +2,7 @@ package com.extrawest.core.model;
 
 import lombok.*;
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
@@ -17,8 +18,8 @@ import java.util.Set;
 @Document(collection = "users")
 public class User {
 
-    @MongoId
-    private ObjectId id;
+    @Id
+    private String id;
     private String name;
     private String surname;
     private String email;

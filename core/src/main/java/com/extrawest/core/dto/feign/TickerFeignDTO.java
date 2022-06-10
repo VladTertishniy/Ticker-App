@@ -7,7 +7,7 @@ import java.time.Duration;
 
 @Data
 public class TickerFeignDTO {
-    private ObjectId id;
+    private String tickerId;
     private Duration interval;
     private String userEmail;
 }

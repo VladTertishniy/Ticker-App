@@ -31,7 +31,7 @@ public class UserService {
         return userRepository.getUserByEmail(email);
     }
 
-    public Optional<User> getUserById(ObjectId id) {
+    public Optional<User> getUserById(String id) {
         return userRepository.getUserById(id);
     }
 

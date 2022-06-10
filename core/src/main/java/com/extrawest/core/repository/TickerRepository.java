@@ -9,8 +9,9 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Collection;
 import java.util.Optional;
 
-public interface TickerRepository extends MongoRepository<Ticker, ObjectId> {
-    Optional<Ticker> getTickerById(ObjectId id);
+public interface TickerRepository extends MongoRepository<Ticker, String> {
+    Optional<Ticker> getTickerById(String id);
     Optional<Collection<Ticker>> getTickersByOwner(User user);
     Collection<Ticker> getTickersByStatus (Status status);
+    Collection<Ticker> findAllByStatus(Status status);
 }

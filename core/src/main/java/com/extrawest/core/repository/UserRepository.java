@@ -6,10 +6,10 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
 import java.util.Optional;
-public interface UserRepository extends MongoRepository<User, ObjectId> {
+public interface UserRepository extends MongoRepository<User, String> {
 
     Optional<User> getUserByEmail(String email);
-    Optional<User> getUserById(ObjectId id);
+    Optional<User> getUserById(String id);
     boolean existsUserByEmail(String email);
-    boolean existsUserById(ObjectId id);
+    boolean existsUserById(String id);
 }

@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping(PathConstants.API_PATH)
 @AllArgsConstructor
@@ -18,19 +20,22 @@ public class TickerController {
     private TickerService tickerService;
 
     @PostMapping(path = "/createTicker/")
-    public ResponseEntity<?> createTicker (@RequestBody TickerDTO tickerDTO) {
-        tickerService.createTicker(tickerDTO);
-        return new ResponseEntity<>("Ticker created", HttpStatus.OK);
+    public ResponseEntity<?> createTicker (@RequestBody @Valid TickerDTO tickerDTO) {
+        return tickerService.createTicker(tickerDTO);
     }
 
     @GetMapping(path = "/getTickerById/{id}")
-    public ResponseEntity<Ticker> getTickerById(@PathVariable ObjectId id) {
+    public ResponseEntity<Ticker> getTickerById(@PathVariable String id) {
         return new ResponseEntity<>(tickerService.getTickerById(id).get(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/startTickerById/{id}")
-    public ResponseEntity<?> startTickerById (@PathVariable ObjectId id) {
-        tickerService.startTicker(id);
-        return new ResponseEntity<>("Test", HttpStatus.OK); //todo
+    public ResponseEntity<?> startTickerById (@PathVariable String id) {
+        return tickerService.startTicker(id, false);
+    }
+
+    @GetMapping(path = "/stopTickerById/{id}")
+    public ResponseEntity<?> stopTickerById (@PathVariable String id) {
+        return tickerService.stopTicker(id);
     }
 }

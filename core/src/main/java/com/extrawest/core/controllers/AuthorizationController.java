@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 
 
 @RestController
@@ -22,9 +24,13 @@ public class AuthorizationController {
     private final AuthService authService;
 
     @PostMapping(PathConstants.SIGN_IN_PATH)
-    public ResponseEntity<AuthResponseDTO> signInUser(@RequestBody LoginDTO loginDto){
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(authService.signInUser(loginDto));
+    public ResponseEntity<?> signInUser(@RequestBody @Valid LoginDTO loginDto){
+        try{
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(authService.signInUser(loginDto));
+        } catch (UserPrincipalNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
     }
 
     @PostMapping(PathConstants.SIGN_OUT_PATH)
@@ -34,12 +40,12 @@ public class AuthorizationController {
 
 
     @PostMapping(PathConstants.SIGN_UP_PATH)
-    public ResponseEntity<?> registerUser(@RequestBody SignUpDTO signUpDto){
+    public ResponseEntity<?> registerUser(@RequestBody @Valid SignUpDTO signUpDto){
         if (authService.isUserExistByEmail(signUpDto.getEmail())) {
             return new ResponseEntity<>("Email is already taken!", HttpStatus.BAD_REQUEST);
         }
         authService.signUpUser(signUpDto);
-        return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
+        return new ResponseEntity<>("User registered successfully", HttpStatus.CREATED);
     }
 
     @RequestMapping(path = "/test/IsUserAuthorize", method = RequestMethod.POST)

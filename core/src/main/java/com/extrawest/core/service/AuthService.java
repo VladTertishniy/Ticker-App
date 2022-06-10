@@ -6,6 +6,8 @@ import com.extrawest.core.dto.auth.SignUpDTO;
 import com.extrawest.core.model.User;
 import com.extrawest.core.security.jwt.JWTTokenProvider;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 
 @Service
 @AllArgsConstructor
@@ -28,7 +31,7 @@ public class AuthService {
         securityContextLogoutHandler.logout(request, response, null);
     }
 
-    public AuthResponseDTO signInUser(LoginDTO loginDTO) {
+    public AuthResponseDTO signInUser(LoginDTO loginDTO) throws UserPrincipalNotFoundException {
         String userEmail = loginDTO.getEmail();
         if (userService.isUserExistByEmail(userEmail)) {
             User user = userService.getUserByEmail(userEmail).get();
@@ -37,15 +40,12 @@ public class AuthService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             return new AuthResponseDTO(jwtTokenProvider.createToken(loginDTO.getEmail(), user.getRoles()));
         } else {
-            throw new RuntimeException(); //todo
+            throw new UserPrincipalNotFoundException(userEmail);
         }
     }
 
     public void signUpUser(SignUpDTO signUpDTO) {
         String userEmail = signUpDTO.getEmail();
-        if(userService.isUserExistByEmail(userEmail)){
-            throw new RuntimeException(); //todo
-        }
         userService.saveUser(signUpDTO);
     }
 
