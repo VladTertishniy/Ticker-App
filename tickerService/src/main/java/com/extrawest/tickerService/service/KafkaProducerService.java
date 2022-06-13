@@ -10,8 +10,12 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class KafkaProducerService {
     private final KafkaTemplate<Long, Object> kafkaTemplate;
+    private final WebSocketService webSocketService;
 
     public void send(TickResponseDTO response) {
+        TickSender tickSender = new TickSender(response.toString());
+        webSocketService.sendToPublic(tickSender);
+        webSocketService.sendToUser(response.getUserEmail(), tickSender);
         kafkaTemplate.send("ticks", response);
     }
 
