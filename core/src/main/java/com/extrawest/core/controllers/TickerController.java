@@ -2,10 +2,9 @@ package com.extrawest.core.controllers;
 
 import com.extrawest.core.dto.TickerDTO;
 import com.extrawest.core.model.Ticker;
-import com.extrawest.core.service.TickerService;
+import com.extrawest.core.service.impl.TickerServiceImpl;
 import com.extrawest.core.utility.PathConstants;
 import lombok.AllArgsConstructor;
-import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +16,7 @@ import javax.validation.Valid;
 @AllArgsConstructor
 public class TickerController {
 
-    private TickerService tickerService;
+    private TickerServiceImpl tickerService;
 
     @PostMapping(path = "/createTicker/")
     public ResponseEntity<?> createTicker (@RequestBody @Valid TickerDTO tickerDTO) {

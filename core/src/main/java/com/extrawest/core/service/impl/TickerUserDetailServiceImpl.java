@@ -1,10 +1,9 @@
-package com.extrawest.core.service;
+package com.extrawest.core.service.impl;
 
 import com.extrawest.core.model.Role;
 import com.extrawest.core.model.User;
 import com.extrawest.core.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class TickerUserDetailService implements UserDetailsService {
+public class TickerUserDetailServiceImpl implements UserDetailsService {
 
     private UserRepository userRepository;
 

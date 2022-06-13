@@ -1,7 +1,7 @@
 package com.extrawest.core.security;
 
 import com.extrawest.core.security.jwt.JWTConfig;
-import com.extrawest.core.service.TickerUserDetailService;
+import com.extrawest.core.service.impl.TickerUserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -20,10 +19,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final TickerUserDetailService tickerUserDetailService;
+    private final TickerUserDetailServiceImpl tickerUserDetailService;
     private final JWTConfig jwtConfigurer;
 
-    public SpringSecurityConfiguration(@Autowired TickerUserDetailService tickerUserDetailService,
+    public SpringSecurityConfiguration(@Autowired TickerUserDetailServiceImpl tickerUserDetailService,
                                        @Autowired JWTConfig jwtConfigurer) {
         this.tickerUserDetailService = tickerUserDetailService;
         this.jwtConfigurer = jwtConfigurer;

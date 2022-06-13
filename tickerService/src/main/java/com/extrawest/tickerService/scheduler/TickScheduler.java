@@ -4,7 +4,7 @@ import com.extrawest.tickerService.dto.TickerRequestDTO;
 import com.extrawest.tickerService.dto.TickResponseDTO;
 import com.extrawest.tickerService.dto.TickerTimeSideDTO;
 import com.extrawest.tickerService.model.Side;
-import com.extrawest.tickerService.service.KafkaProducerService;
+import com.extrawest.tickerService.service.impl.KafkaProducerServiceImpl;
 import com.extrawest.tickerService.storage.TickStorage;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import java.util.Date;
 @EnableScheduling
 @Slf4j
 public class TickScheduler {
-    private final KafkaProducerService kafkaProducerService;
+    private final KafkaProducerServiceImpl kafkaProducerService;
 
     public Runnable doTask(TickerRequestDTO tickerRequestDTO) {
         return () -> {
