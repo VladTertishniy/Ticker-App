@@ -7,6 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
 @UtilityClass
-public class ScheduleTasksStorage {
+public class TasksStorage {
     public static final Map<String, ScheduledFuture<?>> scheduleStorageMap = new ConcurrentHashMap<>();
 }
