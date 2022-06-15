@@ -1,13 +1,11 @@
 package com.extrawest.core.model;
 
 import lombok.*;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.Duration;
-import java.util.Collection;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -22,7 +20,8 @@ public class TicksHistory {
     private String id;
     private Date timestamp;
     private Side side;
-    private Ticker relatedTicker;
+    @DBRef()
+    private Ticker ticker;
     private Duration currentInterval;
 
 }

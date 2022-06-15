@@ -6,6 +6,7 @@ import com.extrawest.core.model.Ticker;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public interface TickerService {
@@ -16,5 +17,6 @@ public interface TickerService {
     ResponseEntity<?> startTicker (String id, boolean isRestarting);
     ResponseEntity<?> stopTicker (String id);
     void updateTickerStatus(Ticker ticker, Status status);
+    List<Ticker> findAllByOwner(String email);
 
 }

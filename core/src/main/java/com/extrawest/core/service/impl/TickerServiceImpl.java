@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,9 +30,15 @@ public class TickerServiceImpl implements TickerService {
 
     private final TickerMapper tickerMapper;
     private final TickerFeignClient tickerFeignClient;
+    private final UserServiceImpl userService;
 
     public void saveTicker(Ticker ticker) {
         tickerRepository.save(ticker);
+    }
+
+    @Override
+    public List<Ticker> findAllByOwner(String email) {
+        return tickerRepository.findAllByOwner(userService.getUserByEmail(email).get());
     }
 
     @Override
@@ -96,5 +103,5 @@ public class TickerServiceImpl implements TickerService {
                 startTicker(tick.getId(), true);
             }
         }
-    }
+    } //todo от сюда это нужно убрать
 }
