@@ -10,15 +10,12 @@ import com.extrawest.core.repository.TickerRepository;
 import com.extrawest.core.repository.UserRepository;
 import com.extrawest.core.security.AuthenticationFacade;
 import lombok.AllArgsConstructor;
-import org.bson.types.ObjectId;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static java.time.temporal.ChronoUnit.SECONDS;
 
 @Component
 @AllArgsConstructor
@@ -30,8 +27,7 @@ public class TickerMapper {
     public Ticker tickerDTOToTicker(TickerDTO tickerDTO) {
         Set<Tick> ticks = new HashSet<>();
         Ticker ticker = new Ticker();
-        long duration = tickerDTO.getInterval();
-        ticker.setTickInterval(Duration.of(duration, SECONDS));
+        ticker.setTickInterval(tickerDTO.getInterval());
         String email = authenticationFacade.getAuthentication().getName();
         User user = userRepository.getUserByEmail(email).get();
         ticker.setOwner(user);

@@ -5,7 +5,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.Duration;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -22,6 +21,6 @@ public class TicksHistory {
     private Side side;
     @DBRef()
     private Ticker ticker;
-    private Duration currentInterval;
+    private double currentInterval;
 
 }

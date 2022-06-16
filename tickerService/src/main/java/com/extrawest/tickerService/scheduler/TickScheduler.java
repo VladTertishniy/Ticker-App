@@ -11,8 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 @Service
@@ -47,10 +45,12 @@ public class TickScheduler {
 
     }
 
-    private Duration getCurrentInterval(String id) {
+    private double getCurrentInterval(String id) {
         if (TickStorage.lastTickMap.get(id) == null) {
-            return Duration.ZERO;
+            return 0;
         }
-        return Duration.of((new Date(System. currentTimeMillis()).getTime() - TickStorage.lastTickMap.get(id).getTimestamp().getTime()), ChronoUnit.MILLIS);
+
+        return (double) (new Date().getTime() - TickStorage.lastTickMap.get(id).getTimestamp().getTime())
+                / 1000L;
     }
 }

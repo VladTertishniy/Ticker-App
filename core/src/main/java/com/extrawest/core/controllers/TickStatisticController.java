@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Duration;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
@@ -32,7 +30,7 @@ public class TickStatisticController {
     }
 
     @GetMapping("/averageTickTimeout")
-    public ResponseEntity<Map<Ticker, Duration>> getAverageTickTimeOut () {
+    public ResponseEntity<Map<Ticker, Double>> getAverageTickTimeOut () {
         return ResponseEntity.ok(statisticService.getAverageTickTimeOut());
     }
 

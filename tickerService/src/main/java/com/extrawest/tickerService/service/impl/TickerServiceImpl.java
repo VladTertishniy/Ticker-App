@@ -9,6 +9,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ScheduledFuture;
 
 @Service
@@ -31,7 +33,7 @@ public class TickerServiceImpl implements TickerService {
 
     private void runTick(TickerRequestDTO request) {
         ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleWithFixedDelay(tickScheduler.doTask(request),
-                request.getInterval());
+                Duration.of((long) request.getInterval(), ChronoUnit.MILLIS));
         TasksStorage.scheduleStorageMap.put(request.getTickerId(), scheduledFuture);
     }
 

@@ -4,8 +4,6 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.Duration;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -17,6 +15,6 @@ public class Tick {
     @Id
     private String id;
     private Side side;
-    private Duration currentInterval;
+    private double currentInterval;
 
 }

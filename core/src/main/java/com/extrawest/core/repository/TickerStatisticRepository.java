@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
 
-import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +41,7 @@ public class TickerStatisticRepository {
         return response;
     }
 
-    public Map<Ticker, Duration> getAverageTickTimeOut (List<Ticker> tickers) {
+    public Map<Ticker, Double> getAverageTickTimeOut (List<Ticker> tickers) {
 
         Criteria criteria = Criteria.where("ticker").in(tickers);
         MatchOperation matchOperation = Aggregation.match(criteria);
@@ -50,12 +49,12 @@ public class TickerStatisticRepository {
         ProjectionOperation projectionOperation = Aggregation.project("avgCurrentInterval").and("ticker").previousOperation();
         Aggregation aggregation = Aggregation.newAggregation(matchOperation, groupOperation, projectionOperation);
         AggregationResults<Map> results = mongoTemplate.aggregate(aggregation, TicksHistory.class, Map.class);
-        Map<Ticker, Duration> response = new HashMap<>();
+        Map<Ticker, Double> response = new HashMap<>();
         results.getMappedResults().forEach(
                 r -> {
                     Ticker ticker = objectMapper.convertValue(r.get("ticker"), Ticker.class);
-                    Duration duration = (Duration) r.get("avgCurrentInterval");
-                    response.put(ticker, duration);
+                    Double avgCurrentInterval = (Double) r.get("avgCurrentInterval");
+                    response.put(ticker, avgCurrentInterval);
                 }
         );
         return response;

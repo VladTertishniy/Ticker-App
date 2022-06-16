@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class TickerDTO {
     private int id;
-    private long interval;
+    private double interval;
     private String userEmail;
 }

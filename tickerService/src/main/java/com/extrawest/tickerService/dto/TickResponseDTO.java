@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Duration;
 import java.util.Date;
 
 @Data
@@ -15,6 +14,6 @@ public class TickResponseDTO {
     private String tickerId;
     private Date timestamp;
     private Side side;
-    private Duration currentInterval;
+    private double currentInterval;
     private String userEmail;
 }
