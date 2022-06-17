@@ -2,9 +2,13 @@ package com.extrawest.core.service.impl;
 
 import com.extrawest.core.TickerFeignClient;
 import com.extrawest.core.dto.TickerDTO;
+import com.extrawest.core.dto.TickerResponseDTO;
 import com.extrawest.core.dto.mapper.TickerMapper;
 import com.extrawest.core.model.Status;
+import com.extrawest.core.model.Tick;
+import com.extrawest.core.model.TickStatistic;
 import com.extrawest.core.model.Ticker;
+import com.extrawest.core.repository.TickStatisticRepository;
 import com.extrawest.core.repository.TickerRepository;
 import com.extrawest.core.service.TickerService;
 import feign.FeignException;
@@ -17,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,8 +36,10 @@ public class TickerServiceImpl implements TickerService {
     private final TickerMapper tickerMapper;
     private final TickerFeignClient tickerFeignClient;
     private final UserServiceImpl userService;
+    private final TickStatisticRepository tickStatisticRepository;
 
-    public void saveTicker(Ticker ticker) {
+    public void updateTickerTicks(Ticker ticker, Tick tick) {
+        ticker.getTicks().add(tick);
         tickerRepository.save(ticker);
     }
 
@@ -42,14 +49,24 @@ public class TickerServiceImpl implements TickerService {
     }
 
     @Override
-    public ResponseEntity<?> createTicker(TickerDTO tickerDTO) {
-        tickerRepository.save(tickerMapper.tickerDTOToTicker(tickerDTO));
-        return new ResponseEntity<>("Ticker created", HttpStatus.OK);
+    public TickerResponseDTO createTicker(TickerDTO tickerDTO) {
+        Ticker ticker = tickerMapper.tickerDTOToTicker(tickerDTO);
+        tickerRepository.save(ticker);
+//        saveTickStatistic(ticker);
+        return tickerMapper.tickerToTickerResponseDTO(ticker);
     }
 
     @Override
     public Optional<Ticker> getTickerById (String id) {
         return tickerRepository.getTickerById(id);
+    }
+
+    private void saveTickStatistic(Ticker ticker) {
+        TickStatistic tickStatistic = new TickStatistic(new Date(),
+                ticker.getId(),
+                ticker.getStatus(),
+                ticker.getOwner().getEmail());
+        tickStatisticRepository.save(tickStatistic);
     }
 
     @Override
@@ -65,6 +82,7 @@ public class TickerServiceImpl implements TickerService {
                 try {
                     tickerFeignClient.start(tickerMapper.tickerToTickerFeignDTO(ticker));
                     updateTickerStatus(ticker, Status.ACTIVE);
+                    saveTickStatistic(ticker);
                     return new ResponseEntity<>("Run ticker: "+ ticker, HttpStatus.OK);
                 } catch (FeignException e) {
                     log.error(e.getMessage());
@@ -80,7 +98,8 @@ public class TickerServiceImpl implements TickerService {
         if (ticker != null) {
             try {
                 tickerFeignClient.stop(tickerMapper.tickerToTickerFeignDTO(ticker));
-                updateTickerStatus(ticker, Status.DISABLED);
+                updateTickerStatus(ticker, Status.PAUSED);
+                saveTickStatistic(ticker);
                 return new ResponseEntity<>("Ticker with id: " + id + " stopped", HttpStatus.OK);
             } catch (FeignException e) {
                 log.error(e.getMessage());

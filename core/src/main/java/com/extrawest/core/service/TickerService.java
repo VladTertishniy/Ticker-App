@@ -1,7 +1,9 @@
 package com.extrawest.core.service;
 
 import com.extrawest.core.dto.TickerDTO;
+import com.extrawest.core.dto.TickerResponseDTO;
 import com.extrawest.core.model.Status;
+import com.extrawest.core.model.Tick;
 import com.extrawest.core.model.Ticker;
 import org.springframework.http.ResponseEntity;
 
@@ -10,8 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TickerService {
-    void saveTicker(Ticker ticker);
-    ResponseEntity<?> createTicker(TickerDTO tickerDTO);
+    void updateTickerTicks(Ticker ticker, Tick tick);
+    TickerResponseDTO createTicker(TickerDTO tickerDTO);
     Optional<Ticker> getTickerById (String id);
     Collection<Ticker> getTickersByStatus (Status status);
     ResponseEntity<?> startTicker (String id, boolean isRestarting);

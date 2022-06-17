@@ -4,6 +4,6 @@ public enum Status {
 
     NEW,
     ACTIVE,
-    DISABLED
+    PAUSED
 
 }

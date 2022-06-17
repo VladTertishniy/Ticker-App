@@ -44,7 +44,7 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService {
         ticker.getTicks().add(tick);
         ticksHistory.setTicker(ticker);
         ticksRepository.save(tick);
-        tickerService.saveTicker(ticker);
+        tickerService.updateTickerTicks(ticker, tick);
         ticksHistoryRepository.save(ticksHistory);
     }
 }

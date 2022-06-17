@@ -1,5 +1,6 @@
 package com.extrawest.core.controllers;
 
+import com.extrawest.core.model.Status;
 import com.extrawest.core.model.Ticker;
 import com.extrawest.core.service.impl.StatisticServiceImpl;
 import com.extrawest.core.utility.PathConstants;
@@ -22,7 +23,7 @@ public class TickStatisticController {
     private StatisticServiceImpl statisticService;
 
     @GetMapping("/countForPeriod")
-    public ResponseEntity<Map<Ticker, Integer>> getTicksCountForPeriod (
+    public ResponseEntity<Map<Ticker, Integer>> getTicksCountForPeriod(
             @RequestParam @DateTimeFormat(pattern = "dd.MM.yyyy-HH:mm:ss") Date from,
             @RequestParam @DateTimeFormat(pattern = "dd.MM.yyyy-HH:mm:ss") Date to
     ) {
@@ -30,8 +31,18 @@ public class TickStatisticController {
     }
 
     @GetMapping("/averageTickTimeout")
-    public ResponseEntity<Map<Ticker, Double>> getAverageTickTimeOut () {
+    public ResponseEntity<Map<Ticker, Double>> getAverageTickTimeOut() {
         return ResponseEntity.ok(statisticService.getAverageTickTimeOut());
+    }
+
+    @GetMapping("/startStop")
+    public ResponseEntity<Map<Status, Integer>> getStartStopStatistic() {
+        return ResponseEntity.ok(statisticService.getStartStopTickers());
+    }
+
+    @GetMapping("/activePaused")
+    public ResponseEntity<Map<Status, Integer>> getActivePausedTickers() {
+        return ResponseEntity.ok(statisticService.getActivePausedTickers());
     }
 
 }

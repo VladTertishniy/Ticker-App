@@ -1,7 +1,9 @@
 package com.extrawest.core.service.impl;
 
+import com.extrawest.core.model.Status;
 import com.extrawest.core.model.Ticker;
 import com.extrawest.core.repository.TickerStatisticRepository;
+import com.extrawest.core.repository.UserRepository;
 import com.extrawest.core.security.AuthenticationFacade;
 import com.extrawest.core.service.StatisticService;
 import lombok.AllArgsConstructor;
@@ -18,6 +20,7 @@ import java.util.Map;
 public class StatisticServiceImpl implements StatisticService {
 
     private TickerStatisticRepository tickerStatisticRepository;
+    private UserRepository userRepository;
     private final AuthenticationFacade authenticationFacade;
     private final TickerServiceImpl tickerService;
 
@@ -31,6 +34,16 @@ public class StatisticServiceImpl implements StatisticService {
     public Map<Ticker, Double> getAverageTickTimeOut() {
         List<Ticker> tickers = tickerService.findAllByOwner(getCurrentUserEmail());
         return tickerStatisticRepository.getAverageTickTimeOut(tickers);
+    }
+
+    @Override
+    public Map<Status, Integer> getStartStopTickers() {
+        return tickerStatisticRepository.getStartStopTickers(getCurrentUserEmail());
+    }
+
+    @Override
+    public Map<Status, Integer> getActivePausedTickers() {
+        return tickerStatisticRepository.getActivePausedTickers(userRepository.getUserByEmail(getCurrentUserEmail()).get());
     }
 
     private String getCurrentUserEmail () {

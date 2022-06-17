@@ -1,6 +1,7 @@
 package com.extrawest.core.dto.mapper;
 
 import com.extrawest.core.dto.TickerDTO;
+import com.extrawest.core.dto.TickerResponseDTO;
 import com.extrawest.core.dto.feign.TickerFeignDTO;
 import com.extrawest.core.model.Status;
 import com.extrawest.core.model.Tick;
@@ -47,6 +48,14 @@ public class TickerMapper {
         tickerFeignDTO.setInterval(ticker.getTickInterval());
         tickerFeignDTO.setUserEmail(ticker.getOwner().getEmail());
         return tickerFeignDTO;
+    }
+
+    public TickerResponseDTO tickerToTickerResponseDTO (Ticker ticker) {
+        TickerResponseDTO tickerResponseDTO = new TickerResponseDTO();
+        tickerResponseDTO.setId(ticker.getId());
+        tickerResponseDTO.setTickInterval(ticker.getTickInterval());
+        tickerResponseDTO.setStatus(ticker.getStatus());
+        return tickerResponseDTO;
     }
 
 }

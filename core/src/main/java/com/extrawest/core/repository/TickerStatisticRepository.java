@@ -1,7 +1,6 @@
 package com.extrawest.core.repository;
 
-import com.extrawest.core.model.Ticker;
-import com.extrawest.core.model.TicksHistory;
+import com.extrawest.core.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,10 +9,7 @@ import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 @Data
@@ -55,9 +51,43 @@ public class TickerStatisticRepository {
                     Ticker ticker = objectMapper.convertValue(r.get("ticker"), Ticker.class);
                     Double avgCurrentInterval = (Double) r.get("avgCurrentInterval");
                     response.put(ticker, avgCurrentInterval);
-                }
-        );
+                });
         return response;
+    }
+
+    public Map<Status, Integer> getStartStopTickers (String userEmail) {
+        Criteria criteria = Criteria.where("userEmail").in(userEmail).and("status").in("ACTIVE", "PAUSED");
+        MatchOperation matchOperation = Aggregation.match(criteria);
+        GroupOperation groupOperation = Aggregation.group("status").count().as("statusCount");
+        ProjectionOperation projectionOperation = Aggregation.project("statusCount").and("status").previousOperation();
+        Aggregation aggregation = Aggregation.newAggregation(matchOperation, groupOperation, projectionOperation);
+        AggregationResults<Map> resultList = mongoTemplate.aggregate(aggregation, TickStatistic.class, Map.class);
+        Map<Status, Integer> resultMap = new EnumMap<>(Status.class);
+        resultList.getMappedResults().forEach(
+                r -> {
+                    Status status = Status.valueOf((String) r.get("status"));
+                    int statusCount = (Integer) r.get("statusCount");
+                    resultMap.put(status, statusCount);
+                });
+        return resultMap;
+    }
+
+    public Map<Status, Integer> getActivePausedTickers(User user) {
+
+        Criteria criteria = Criteria.where("user").in(user).and("status").in("ACTIVE", "PAUSED");
+        MatchOperation matchStage = Aggregation.match(criteria);
+        GroupOperation group = Aggregation.group("status").count().as("statusCount");
+        ProjectionOperation projectionOperation = Aggregation.project("statusCount").and("status").previousOperation();
+        Aggregation aggregation = Aggregation.newAggregation(matchStage, group, projectionOperation);
+        AggregationResults<Map> result = mongoTemplate.aggregate(aggregation, Ticker.class, Map.class);
+        Map<Status, Integer> resultMap = new EnumMap<>(Status.class);
+        result.getMappedResults().forEach(
+                r -> {
+                    Status status = Status.valueOf((String) r.get("status"));
+                    Integer statusCount = (Integer) r.get("statusCount");
+                    resultMap.put(status, statusCount);
+                });
+        return resultMap;
     }
 
 }

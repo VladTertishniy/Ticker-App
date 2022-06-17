@@ -1,6 +1,7 @@
 package com.extrawest.core.controllers;
 
 import com.extrawest.core.dto.TickerDTO;
+import com.extrawest.core.dto.TickerResponseDTO;
 import com.extrawest.core.model.Ticker;
 import com.extrawest.core.service.impl.TickerServiceImpl;
 import com.extrawest.core.utility.PathConstants;
@@ -19,8 +20,9 @@ public class TickerController {
     private TickerServiceImpl tickerService;
 
     @PostMapping(path = "/createTicker/")
-    public ResponseEntity<?> createTicker (@RequestBody @Valid TickerDTO tickerDTO) {
-        return tickerService.createTicker(tickerDTO);
+    public ResponseEntity<TickerResponseDTO> createTicker (@RequestBody @Valid TickerDTO tickerDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(tickerService.createTicker(tickerDTO));
     }
 
     @GetMapping(path = "/getTickerById/{id}")
