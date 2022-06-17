@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TickerRepository extends MongoRepository<Ticker, String> {
-    Optional<Ticker> getTickerById(String id);
+    Optional<Ticker> getTickerById(int id);
     Optional<Collection<Ticker>> getTickersByOwner(User user);
     List<Ticker> getTickersByStatus (Status status);
     List<Ticker> findAllByStatus(Status status);

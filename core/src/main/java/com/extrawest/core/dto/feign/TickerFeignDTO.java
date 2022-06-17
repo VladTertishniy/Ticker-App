@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class TickerFeignDTO {
-    private String tickerId;
+    private int tickerId;
     private double interval;
     private String userEmail;
 }

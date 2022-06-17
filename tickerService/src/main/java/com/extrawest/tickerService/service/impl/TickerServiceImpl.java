@@ -38,7 +38,7 @@ public class TickerServiceImpl implements TickerService {
     }
 
     private void stopTick(TickerRequestDTO request) {
-        String tickerId = request.getTickerId();
+        int tickerId = request.getTickerId();
         ScheduledFuture<?> scheduledFuture = TasksStorage.scheduleStorageMap.get(tickerId);
         scheduledFuture.cancel(true);
     }

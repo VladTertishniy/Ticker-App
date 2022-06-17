@@ -8,5 +8,5 @@ import java.util.Map;
 
 @UtilityClass
 public class TickStorage {
-    public static final Map<String, TickerTimeSideDTO> lastTickMap = new HashMap<>();
+    public static final Map<Integer, TickerTimeSideDTO> lastTickMap = new HashMap<>();
 }

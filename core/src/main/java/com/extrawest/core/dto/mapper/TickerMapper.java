@@ -37,7 +37,7 @@ public class TickerMapper {
         return ticker;
     }
 
-    public Ticker tickerIdToTicker(String id) {
+    public Ticker tickerIdToTicker(int id) {
         Optional<Ticker> ticker = tickerRepository.getTickerById(id);
         return ticker.orElse(null);
     }

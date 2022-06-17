@@ -14,10 +14,10 @@ import java.util.Optional;
 public interface TickerService {
     void updateTickerTicks(Ticker ticker, Tick tick);
     TickerResponseDTO createTicker(TickerDTO tickerDTO);
-    Optional<Ticker> getTickerById (String id);
+    Optional<Ticker> getTickerById (int id);
     Collection<Ticker> getTickersByStatus (Status status);
-    ResponseEntity<?> startTicker (String id, boolean isRestarting);
-    ResponseEntity<?> stopTicker (String id);
+    ResponseEntity<?> startTicker (int id, boolean isRestarting);
+    ResponseEntity<?> stopTicker (int id);
     void updateTickerStatus(Ticker ticker, Status status);
     List<Ticker> findAllByOwner(String email);
 

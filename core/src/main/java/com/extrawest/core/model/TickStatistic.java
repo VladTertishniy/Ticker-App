@@ -15,13 +15,13 @@ public class TickStatistic {
     private String id;
     private Date timestamp;
     private String userEmail;
-    private String email;
+    private int tickerId;
     private Status status;
 
-    public TickStatistic(Date timestamp, String userEmail, Status status, String email) {
+    public TickStatistic(Date timestamp, String userEmail, Status status, int tickerId) {
         this.timestamp = timestamp;
         this.userEmail = userEmail;
         this.status = status;
-        this.email = email;
+        this.tickerId = tickerId;
     }
 }

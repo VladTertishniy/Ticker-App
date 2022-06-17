@@ -8,5 +8,5 @@ import java.util.concurrent.ScheduledFuture;
 
 @UtilityClass
 public class TasksStorage {
-    public static final Map<String, ScheduledFuture<?>> scheduleStorageMap = new ConcurrentHashMap<>();
+    public static final Map<Integer, ScheduledFuture<?>> scheduleStorageMap = new ConcurrentHashMap<>();
 }

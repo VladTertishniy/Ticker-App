@@ -45,7 +45,7 @@ public class TickScheduler {
 
     }
 
-    private double getCurrentInterval(String id) {
+    private double getCurrentInterval(int id) {
         if (TickStorage.lastTickMap.get(id) == null) {
             return 0;
         }

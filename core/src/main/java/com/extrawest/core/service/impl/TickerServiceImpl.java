@@ -37,6 +37,7 @@ public class TickerServiceImpl implements TickerService {
     private final TickerFeignClient tickerFeignClient;
     private final UserServiceImpl userService;
     private final TickStatisticRepository tickStatisticRepository;
+    private final TickerSequenceGeneratorService tickerSequenceGeneratorService;
 
     public void updateTickerTicks(Ticker ticker, Tick tick) {
         ticker.getTicks().add(tick);
@@ -51,21 +52,21 @@ public class TickerServiceImpl implements TickerService {
     @Override
     public TickerResponseDTO createTicker(TickerDTO tickerDTO) {
         Ticker ticker = tickerMapper.tickerDTOToTicker(tickerDTO);
+        ticker.setId(tickerSequenceGeneratorService.getSequenceNumber(Ticker.SEQUENCE));
         tickerRepository.save(ticker);
-//        saveTickStatistic(ticker);
         return tickerMapper.tickerToTickerResponseDTO(ticker);
     }
 
     @Override
-    public Optional<Ticker> getTickerById (String id) {
+    public Optional<Ticker> getTickerById (int id) {
         return tickerRepository.getTickerById(id);
     }
 
     private void saveTickStatistic(Ticker ticker) {
         TickStatistic tickStatistic = new TickStatistic(new Date(),
-                ticker.getId(),
+                ticker.getOwner().getEmail(),
                 ticker.getStatus(),
-                ticker.getOwner().getEmail());
+                ticker.getId());
         tickStatisticRepository.save(tickStatistic);
     }
 
@@ -75,7 +76,7 @@ public class TickerServiceImpl implements TickerService {
     }
 
     @Override
-    public ResponseEntity<?> startTicker (String id, boolean isRestarting) {
+    public ResponseEntity<?> startTicker (int id, boolean isRestarting) {
         Ticker ticker = tickerMapper.tickerIdToTicker(id);
         if (ticker != null) {
             if (Status.ACTIVE != ticker.getStatus() || isRestarting) {
@@ -93,7 +94,7 @@ public class TickerServiceImpl implements TickerService {
     }
 
     @Override
-    public ResponseEntity<?> stopTicker (String id) {
+    public ResponseEntity<?> stopTicker (int id) {
         Ticker ticker = tickerMapper.tickerIdToTicker(id);
         if (ticker != null) {
             try {

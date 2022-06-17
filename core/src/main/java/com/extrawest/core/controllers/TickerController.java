@@ -26,17 +26,17 @@ public class TickerController {
     }
 
     @GetMapping(path = "/getTickerById/{id}")
-    public ResponseEntity<Ticker> getTickerById(@PathVariable String id) {
+    public ResponseEntity<Ticker> getTickerById(@PathVariable int id) {
         return new ResponseEntity<>(tickerService.getTickerById(id).get(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/startTickerById/{id}")
-    public ResponseEntity<?> startTickerById (@PathVariable String id) {
+    public ResponseEntity<?> startTickerById (@PathVariable int id) {
         return tickerService.startTicker(id, false);
     }
 
     @GetMapping(path = "/stopTickerById/{id}")
-    public ResponseEntity<?> stopTickerById (@PathVariable String id) {
+    public ResponseEntity<?> stopTickerById (@PathVariable int id) {
         return tickerService.stopTicker(id);
     }
 }

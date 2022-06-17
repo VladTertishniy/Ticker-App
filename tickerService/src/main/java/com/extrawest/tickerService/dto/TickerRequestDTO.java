@@ -11,7 +11,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TickerRequestDTO {
-    private String tickerId;
+    private int tickerId;
     private Date timestamp;
     private Side side;
     private double interval;

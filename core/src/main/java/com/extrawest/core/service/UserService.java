@@ -9,6 +9,6 @@ public interface UserService {
     User mapUser(SignUpDTO signUpDTO);
     boolean isUserExistByEmail(String email);
     Optional<User> getUserByEmail(String email);
-    Optional<User> getUserById(String id);
+    Optional<User> getUserById(int id);
     void saveUser (SignUpDTO signUpDto);
 }

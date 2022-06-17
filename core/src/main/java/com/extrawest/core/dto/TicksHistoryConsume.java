@@ -6,7 +6,7 @@ import java.util.Date;
 
 @Data
 public class TicksHistoryConsume {
-    private String tickerId;
+    private int tickerId;
     private Date timestamp;
     private Side side;
     private double currentInterval;

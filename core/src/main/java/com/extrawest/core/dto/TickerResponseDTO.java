@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TickerResponseDTO {
-    private String id;
+    private int id;
     private Status status;
     private double tickInterval;
 }
