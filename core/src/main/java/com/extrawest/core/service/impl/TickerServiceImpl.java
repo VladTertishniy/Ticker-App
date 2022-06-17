@@ -10,16 +10,20 @@ import com.extrawest.core.model.TickStatistic;
 import com.extrawest.core.model.Ticker;
 import com.extrawest.core.repository.TickStatisticRepository;
 import com.extrawest.core.repository.TickerRepository;
+import com.extrawest.core.security.AuthenticationFacade;
 import com.extrawest.core.service.TickerService;
 import feign.FeignException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.PermissionDeniedDataAccessException;
+import org.springframework.expression.AccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.nio.file.AccessDeniedException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +42,7 @@ public class TickerServiceImpl implements TickerService {
     private final UserServiceImpl userService;
     private final TickStatisticRepository tickStatisticRepository;
     private final TickerSequenceGeneratorService tickerSequenceGeneratorService;
+    private final AuthenticationFacade  authenticationFacade;
 
     public void updateTickerTicks(Ticker ticker, Tick tick) {
         ticker.getTicks().add(tick);
@@ -76,52 +81,62 @@ public class TickerServiceImpl implements TickerService {
     }
 
     @Override
-    public ResponseEntity<String> startTicker (int id, boolean isRestarting) {
+    public ResponseEntity<String> startTicker (int id, boolean isRestarting) throws AccessException {
         Ticker ticker = tickerMapper.tickerIdToTicker(id);
         if (ticker != null) {
-            if (Status.ACTIVE != ticker.getStatus() || isRestarting) {
+            if (checkThatCurrentUserIsOwner(ticker)) {
+                if (Status.ACTIVE != ticker.getStatus() || isRestarting) {
+                    try {
+                        tickerFeignClient.start(tickerMapper.tickerToTickerFeignDTO(ticker));
+                        updateTickerStatus(ticker, Status.ACTIVE);
+                        saveTickStatistic(ticker);
+                        return new ResponseEntity<>("Run ticker: "+ ticker, HttpStatus.OK);
+                    } catch (FeignException e) {
+                        log.error(e.getMessage());
+                        return new ResponseEntity<>("Error while starting ticker: " + ticker, HttpStatus.BAD_REQUEST);
+                    }
+                }
+            } else throw new AccessException("Can`t update the ticker, user is not owner");
+        } return new ResponseEntity<>("Ticker with id: " + id + " not found", HttpStatus.NOT_FOUND);
+    }
+
+    @Override
+    public ResponseEntity<String> stopTicker (int id) throws AccessException {
+        Ticker ticker = tickerMapper.tickerIdToTicker(id);
+        if (ticker != null) {
+            if (checkThatCurrentUserIsOwner(ticker)) {
                 try {
-                    tickerFeignClient.start(tickerMapper.tickerToTickerFeignDTO(ticker));
-                    updateTickerStatus(ticker, Status.ACTIVE);
+                    tickerFeignClient.stop(tickerMapper.tickerToTickerFeignDTO(ticker));
+                    updateTickerStatus(ticker, Status.PAUSED);
                     saveTickStatistic(ticker);
-                    return new ResponseEntity<>("Run ticker: "+ ticker, HttpStatus.OK);
+                    return new ResponseEntity<>("Ticker with id: " + id + " stopped", HttpStatus.OK);
                 } catch (FeignException e) {
                     log.error(e.getMessage());
-                    return new ResponseEntity<>("Error while starting ticker: " + ticker, HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>("Error while stopping ticker: " + ticker, HttpStatus.BAD_REQUEST);
                 }
-            }
+            } else throw new AccessException("Can`t update the ticker, user is not owner");
         } return new ResponseEntity<>("Ticker with id: " + id + " not found", HttpStatus.NOT_FOUND);
     }
 
     @Override
-    public ResponseEntity<String> stopTicker (int id) {
-        Ticker ticker = tickerMapper.tickerIdToTicker(id);
-        if (ticker != null) {
-            try {
-                tickerFeignClient.stop(tickerMapper.tickerToTickerFeignDTO(ticker));
-                updateTickerStatus(ticker, Status.PAUSED);
-                saveTickStatistic(ticker);
-                return new ResponseEntity<>("Ticker with id: " + id + " stopped", HttpStatus.OK);
-            } catch (FeignException e) {
-                log.error(e.getMessage());
-                return new ResponseEntity<>("Error while stopping ticker: " + ticker, HttpStatus.BAD_REQUEST);
-            }
-        } return new ResponseEntity<>("Ticker with id: " + id + " not found", HttpStatus.NOT_FOUND);
+    public void updateTickerStatus(Ticker ticker, Status status) throws AccessException {
+        if (checkThatCurrentUserIsOwner(ticker)) {
+            ticker.setStatus(status);
+            tickerRepository.save(ticker);
+        } else throw new AccessException("Can`t update the ticker, user is not owner");
     }
 
-    @Override
-    public void updateTickerStatus(Ticker ticker, Status status) {
-        ticker.setStatus(status);
-        tickerRepository.save(ticker);
+    private boolean checkThatCurrentUserIsOwner (Ticker ticker) {
+        return authenticationFacade.getAuthentication().getName().equals(ticker.getOwner().getEmail());
     }
 
     @PostConstruct
-    private void init() {
+    private void init() throws AccessException {
         Collection<Ticker> activeTickersList = tickerRepository.findAllByStatus(Status.ACTIVE);
         for (Ticker tick : activeTickersList) {
             if (Status.ACTIVE == tick.getStatus()) {
                 startTicker(tick.getId(), true);
             }
         }
-    } //todo от сюда это нужно убрать
+    }
 }

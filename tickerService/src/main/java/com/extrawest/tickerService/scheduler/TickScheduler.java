@@ -31,7 +31,7 @@ public class TickScheduler {
             tickResponseDTO.setTimestamp(new Date());
             if (lastTickMap != null) {
                 if (lastTickMap.getSide() == null) {
-                    tickResponseDTO.setSide(Side.LEFT);
+                    tickResponseDTO.setSide(Side.RIGHT == tickerRequestDTO.getSide() ? Side.LEFT : Side.RIGHT);
                 } else {
                     tickResponseDTO.setSide(Side.LEFT == lastTickMap.getSide() ? Side.RIGHT : Side.LEFT);
                 }

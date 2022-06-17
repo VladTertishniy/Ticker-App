@@ -5,6 +5,7 @@ import com.extrawest.core.dto.response.TickerResponseDTO;
 import com.extrawest.core.model.Status;
 import com.extrawest.core.model.Tick;
 import com.extrawest.core.model.Ticker;
+import org.springframework.expression.AccessException;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Collection;
@@ -16,9 +17,9 @@ public interface TickerService {
     TickerResponseDTO createTicker(TickerDTO tickerDTO);
     Optional<Ticker> getTickerById (int id);
     Collection<Ticker> getTickersByStatus (Status status);
-    ResponseEntity<?> startTicker (int id, boolean isRestarting);
-    ResponseEntity<?> stopTicker (int id);
-    void updateTickerStatus(Ticker ticker, Status status);
+    ResponseEntity<?> startTicker (int id, boolean isRestarting) throws AccessException;
+    ResponseEntity<?> stopTicker (int id) throws AccessException;
+    void updateTickerStatus(Ticker ticker, Status status) throws AccessException;
     List<Ticker> findAllByOwner(String email);
 
 }

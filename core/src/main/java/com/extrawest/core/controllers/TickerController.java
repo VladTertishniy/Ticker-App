@@ -6,6 +6,7 @@ import com.extrawest.core.model.Ticker;
 import com.extrawest.core.service.impl.TickerServiceImpl;
 import com.extrawest.core.utility.PathConstants;
 import lombok.AllArgsConstructor;
+import org.springframework.expression.AccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,12 +32,12 @@ public class TickerController {
     }
 
     @GetMapping(path = "/startTickerById/{id}")
-    public ResponseEntity<String> startTickerById (@PathVariable int id) {
+    public ResponseEntity<String> startTickerById (@PathVariable int id) throws AccessException {
         return tickerService.startTicker(id, false);
     }
 
     @GetMapping(path = "/stopTickerById/{id}")
-    public ResponseEntity<String> stopTickerById (@PathVariable int id) {
+    public ResponseEntity<String> stopTickerById (@PathVariable int id) throws AccessException {
         return tickerService.stopTicker(id);
     }
 }
