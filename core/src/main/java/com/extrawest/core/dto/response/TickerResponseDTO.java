@@ -1,4 +1,4 @@
-package com.extrawest.core.dto;
+package com.extrawest.core.dto.response;
 
 import com.extrawest.core.model.Status;
 import lombok.Getter;

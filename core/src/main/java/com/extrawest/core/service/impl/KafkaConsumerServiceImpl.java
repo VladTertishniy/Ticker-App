@@ -37,7 +37,7 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService {
         ticksHistory.setSide( consume.getSide() );
         ticksHistory.setCurrentInterval( consume.getCurrentInterval() );
 
-        Ticker ticker = tickerService.getTickerById(consume.getTickerId()).get();
+        Ticker ticker = tickerService.getTickerById(consume.getTickerId()).orElseThrow();
         Tick tick = new Tick();
         tick.setSide(consume.getSide());
         tick.setCurrentInterval(consume.getCurrentInterval());

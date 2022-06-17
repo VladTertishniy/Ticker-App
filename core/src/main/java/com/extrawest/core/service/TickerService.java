@@ -1,7 +1,7 @@
 package com.extrawest.core.service;
 
 import com.extrawest.core.dto.TickerDTO;
-import com.extrawest.core.dto.TickerResponseDTO;
+import com.extrawest.core.dto.response.TickerResponseDTO;
 import com.extrawest.core.model.Status;
 import com.extrawest.core.model.Tick;
 import com.extrawest.core.model.Ticker;

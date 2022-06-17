@@ -2,7 +2,7 @@ package com.extrawest.core.service.impl;
 
 import com.extrawest.core.TickerFeignClient;
 import com.extrawest.core.dto.TickerDTO;
-import com.extrawest.core.dto.TickerResponseDTO;
+import com.extrawest.core.dto.response.TickerResponseDTO;
 import com.extrawest.core.dto.mapper.TickerMapper;
 import com.extrawest.core.model.Status;
 import com.extrawest.core.model.Tick;
@@ -46,7 +46,7 @@ public class TickerServiceImpl implements TickerService {
 
     @Override
     public List<Ticker> findAllByOwner(String email) {
-        return tickerRepository.findAllByOwner(userService.getUserByEmail(email).get());
+        return tickerRepository.findAllByOwner(userService.getUserByEmail(email).orElseThrow());
     }
 
     @Override
@@ -76,7 +76,7 @@ public class TickerServiceImpl implements TickerService {
     }
 
     @Override
-    public ResponseEntity<?> startTicker (int id, boolean isRestarting) {
+    public ResponseEntity<String> startTicker (int id, boolean isRestarting) {
         Ticker ticker = tickerMapper.tickerIdToTicker(id);
         if (ticker != null) {
             if (Status.ACTIVE != ticker.getStatus() || isRestarting) {
@@ -94,7 +94,7 @@ public class TickerServiceImpl implements TickerService {
     }
 
     @Override
-    public ResponseEntity<?> stopTicker (int id) {
+    public ResponseEntity<String> stopTicker (int id) {
         Ticker ticker = tickerMapper.tickerIdToTicker(id);
         if (ticker != null) {
             try {

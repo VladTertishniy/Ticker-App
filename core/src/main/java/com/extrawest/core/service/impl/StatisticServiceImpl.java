@@ -43,7 +43,7 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public Map<Status, Integer> getActivePausedTickers() {
-        return tickerStatisticRepository.getActivePausedTickers(userRepository.getUserByEmail(getCurrentUserEmail()).get());
+        return tickerStatisticRepository.getActivePausedTickers(userRepository.getUserByEmail(getCurrentUserEmail()).orElseThrow());
     }
 
     @Override

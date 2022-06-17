@@ -1,7 +1,7 @@
 package com.extrawest.core.dto.mapper;
 
 import com.extrawest.core.dto.TickerDTO;
-import com.extrawest.core.dto.TickerResponseDTO;
+import com.extrawest.core.dto.response.TickerResponseDTO;
 import com.extrawest.core.dto.feign.TickerFeignDTO;
 import com.extrawest.core.model.Status;
 import com.extrawest.core.model.Tick;
@@ -30,7 +30,7 @@ public class TickerMapper {
         Ticker ticker = new Ticker();
         ticker.setTickInterval(tickerDTO.getInterval());
         String email = authenticationFacade.getAuthentication().getName();
-        User user = userRepository.getUserByEmail(email).get();
+        User user = userRepository.getUserByEmail(email).orElseThrow();
         ticker.setOwner(user);
         ticker.setStatus(Status.NEW);
         ticker.setTicks(ticks);

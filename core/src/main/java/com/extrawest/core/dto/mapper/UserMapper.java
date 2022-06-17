@@ -50,7 +50,7 @@ public class UserMapper {
             user.setPassword(passwordEncoder.encode("extrawest"));
             user.setName("Admin");
             user.setSurname("Admin");
-            user.setRoles(Set.of(roleRepository.findByName("ROLE_ADMIN").get()));
+            user.setRoles(Set.of(roleRepository.findByName("ROLE_ADMIN").orElseThrow()));
             userRepository.save(user);
         }
     }

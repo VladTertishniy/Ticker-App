@@ -3,6 +3,8 @@ package com.extrawest.core.service.impl;
 import com.extrawest.core.dto.auth.AuthResponseDTO;
 import com.extrawest.core.dto.auth.LoginDTO;
 import com.extrawest.core.dto.auth.SignUpDTO;
+import com.extrawest.core.exception.EmailAlreadyTakenException;
+import com.extrawest.core.exception.ObjectNotFoundException;
 import com.extrawest.core.model.User;
 import com.extrawest.core.security.jwt.JWTTokenProvider;
 import com.extrawest.core.service.AuthService;
@@ -32,22 +34,20 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponseDTO signInUser(LoginDTO loginDTO) throws UserPrincipalNotFoundException {
+    public AuthResponseDTO signInUser(LoginDTO loginDTO) {
         String userEmail = loginDTO.getEmail();
-        if (userService.isUserExistByEmail(userEmail)) {
-            User user = userService.getUserByEmail(userEmail).get();
+            User user = userService.getUserByEmail(userEmail).orElseThrow();
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     loginDTO.getEmail(), loginDTO.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             return new AuthResponseDTO(jwtTokenProvider.createToken(loginDTO.getEmail(), user.getRoles()));
-        } else {
-            throw new UserPrincipalNotFoundException(userEmail);
-        }
     }
 
     @Override
     public void signUpUser(SignUpDTO signUpDTO) {
-        String userEmail = signUpDTO.getEmail();
+        if (isUserExistByEmail(signUpDTO.getEmail())) {
+            throw new EmailAlreadyTakenException("Email is already taken!");
+        }
         userService.saveUser(signUpDTO);
     }
 
