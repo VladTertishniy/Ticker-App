@@ -90,4 +90,23 @@ public class TickerStatisticRepository {
         return resultMap;
     }
 
+    public Map<Ticker, Integer> getLostTicks(List<Ticker> tickers) {
+        Criteria criteria = Criteria.where("ticker").in(tickers);
+        MatchOperation matchStage = Aggregation.match(criteria);
+        GroupOperation group = Aggregation.group("ticker", "side").count().as("sideCount");
+        ProjectionOperation projectionOperation = Aggregation.project("sideCount").and("ticker").previousOperation();
+        Aggregation aggregation = Aggregation.newAggregation(matchStage, group, projectionOperation);
+        AggregationResults<Map> resultList = mongoTemplate.aggregate(aggregation, TicksHistory.class, Map.class);
+        Map<Ticker, Integer> resultMap = new HashMap<>();
+        resultList.getMappedResults().forEach(
+                r -> {
+                    Map tickerMap = (Map) r.get("ticker");
+                    Ticker ticker = objectMapper.convertValue(tickerMap.get("ticker"), Ticker.class);
+                    Integer sideCount = (Integer) r.get("sideCount");
+                    resultMap.computeIfPresent(ticker, (key, value) -> Math.abs(value - sideCount));
+                    resultMap.putIfAbsent(ticker, sideCount);
+                });
+        return resultMap;
+    }
+
 }

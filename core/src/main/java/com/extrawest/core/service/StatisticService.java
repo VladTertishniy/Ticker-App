@@ -11,4 +11,5 @@ public interface StatisticService {
     Map<Ticker, Double> getAverageTickTimeOut ();
     Map<Status, Integer> getStartStopTickers();
     Map<Status, Integer> getActivePausedTickers();
+    Map<Ticker, Integer> getLostTicks();
 }

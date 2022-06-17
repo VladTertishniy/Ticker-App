@@ -45,4 +45,9 @@ public class TickStatisticController {
         return ResponseEntity.ok(statisticService.getActivePausedTickers());
     }
 
+    @GetMapping("/lostTicks")
+    public ResponseEntity<Map<Ticker, Integer>> getLostTicks() {
+        return ResponseEntity.ok(statisticService.getLostTicks());
+    }
+
 }

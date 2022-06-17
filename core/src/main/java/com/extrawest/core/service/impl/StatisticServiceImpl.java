@@ -46,6 +46,12 @@ public class StatisticServiceImpl implements StatisticService {
         return tickerStatisticRepository.getActivePausedTickers(userRepository.getUserByEmail(getCurrentUserEmail()).get());
     }
 
+    @Override
+    public Map<Ticker, Integer> getLostTicks() {
+        List<Ticker> tickers = tickerService.findAllByOwner(getCurrentUserEmail());
+        return tickerStatisticRepository.getLostTicks(tickers);
+    }
+
     private String getCurrentUserEmail () {
         return authenticationFacade.getAuthentication().getName();
     }
