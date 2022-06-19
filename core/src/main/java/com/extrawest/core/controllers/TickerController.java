@@ -1,6 +1,7 @@
 package com.extrawest.core.controllers;
 
 import com.extrawest.core.dto.TickerDTO;
+import com.extrawest.core.dto.request.TickerRequestDTO;
 import com.extrawest.core.dto.response.TickerResponseDTO;
 import com.extrawest.core.model.Ticker;
 import com.extrawest.core.service.impl.TickerServiceImpl;
@@ -39,5 +40,10 @@ public class TickerController {
     @GetMapping(path = "/stopTickerById/{id}")
     public ResponseEntity<String> stopTickerById (@PathVariable int id) throws AccessException {
         return tickerService.stopTicker(id);
+    }
+
+    @PutMapping(path = "/updateTickInterval/{id}")
+    public ResponseEntity<String> updateTickInterval(@PathVariable int id, @RequestBody @Valid TickerRequestDTO requestDto) throws AccessException {
+        return tickerService.updateTickInterval(id, requestDto);
     }
 }

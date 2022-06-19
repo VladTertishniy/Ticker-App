@@ -1,6 +1,7 @@
 package com.extrawest.core.service;
 
 import com.extrawest.core.dto.TickerDTO;
+import com.extrawest.core.dto.request.TickerRequestDTO;
 import com.extrawest.core.dto.response.TickerResponseDTO;
 import com.extrawest.core.model.Status;
 import com.extrawest.core.model.Tick;
@@ -15,6 +16,7 @@ import java.util.Optional;
 public interface TickerService {
     void updateTickerTicks(Ticker ticker, Tick tick);
     TickerResponseDTO createTicker(TickerDTO tickerDTO);
+    ResponseEntity<String> updateTickInterval(int id, TickerRequestDTO tickerRequestDTO);
     Optional<Ticker> getTickerById (int id);
     Collection<Ticker> getTickersByStatus (Status status);
     ResponseEntity<?> startTicker (int id, boolean isRestarting) throws AccessException;

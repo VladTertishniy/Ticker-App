@@ -2,6 +2,7 @@ package com.extrawest.core.service.impl;
 
 import com.extrawest.core.TickerFeignClient;
 import com.extrawest.core.dto.TickerDTO;
+import com.extrawest.core.dto.request.TickerRequestDTO;
 import com.extrawest.core.dto.response.TickerResponseDTO;
 import com.extrawest.core.dto.mapper.TickerMapper;
 import com.extrawest.core.model.Status;
@@ -60,6 +61,17 @@ public class TickerServiceImpl implements TickerService {
         ticker.setId(tickerSequenceGeneratorService.getSequenceNumber(Ticker.SEQUENCE));
         tickerRepository.save(ticker);
         return tickerMapper.tickerToTickerResponseDTO(ticker);
+    }
+
+    @Override
+    public ResponseEntity<String> updateTickInterval(int id, TickerRequestDTO tickerRequestDTO) {
+        Ticker ticker = tickerRepository.getTickerById(id).orElseThrow();
+        if (checkThatCurrentUserIsOwner(ticker)) {
+            ticker.setTickInterval(tickerRequestDTO.getInterval());
+            tickerRepository.save(ticker);
+            return ResponseEntity.status(HttpStatus.OK).body("Ticker interval updated");
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Current user not owner, denied");
     }
 
     @Override
