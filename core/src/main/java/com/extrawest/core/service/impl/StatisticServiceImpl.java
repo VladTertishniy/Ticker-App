@@ -6,6 +6,7 @@ import com.extrawest.core.repository.TickerStatisticRepository;
 import com.extrawest.core.repository.UserRepository;
 import com.extrawest.core.security.AuthenticationFacade;
 import com.extrawest.core.service.StatisticService;
+import com.extrawest.core.service.TickerService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class StatisticServiceImpl implements StatisticService {
     private TickerStatisticRepository tickerStatisticRepository;
     private UserRepository userRepository;
     private final AuthenticationFacade authenticationFacade;
-    private final TickerServiceImpl tickerService;
+    private final TickerService tickerService;
 
     @Override
     public Map<Ticker, Integer> getTicksCountForPeriod(Date from, Date to) {

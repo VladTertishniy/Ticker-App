@@ -4,7 +4,7 @@ import com.extrawest.core.dto.TickerDTO;
 import com.extrawest.core.dto.request.TickerRequestDTO;
 import com.extrawest.core.dto.response.TickerResponseDTO;
 import com.extrawest.core.model.Ticker;
-import com.extrawest.core.service.impl.TickerServiceImpl;
+import com.extrawest.core.service.TickerService;
 import com.extrawest.core.utility.PathConstants;
 import lombok.AllArgsConstructor;
 import org.springframework.expression.AccessException;
@@ -19,7 +19,7 @@ import javax.validation.Valid;
 @AllArgsConstructor
 public class TickerController {
 
-    private TickerServiceImpl tickerService;
+    private TickerService tickerService;
 
     @PostMapping(path = "/createTicker/")
     public ResponseEntity<TickerResponseDTO> createTicker (@RequestBody @Valid TickerDTO tickerDTO) {
@@ -34,7 +34,7 @@ public class TickerController {
 
     @GetMapping(path = "/startTickerById/{id}")
     public ResponseEntity<String> startTickerById (@PathVariable int id) throws AccessException {
-        return tickerService.startTicker(id, false);
+        return tickerService.startTicker(id);
     }
 
     @GetMapping(path = "/stopTickerById/{id}")
@@ -43,7 +43,7 @@ public class TickerController {
     }
 
     @PutMapping(path = "/updateTickInterval/{id}")
-    public ResponseEntity<String> updateTickInterval(@PathVariable int id, @RequestBody @Valid TickerRequestDTO requestDto) throws AccessException {
+    public ResponseEntity<String> updateTickInterval(@PathVariable int id, @RequestBody @Valid TickerRequestDTO requestDto) {
         return tickerService.updateTickInterval(id, requestDto);
     }
 }

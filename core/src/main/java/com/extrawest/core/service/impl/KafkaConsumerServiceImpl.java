@@ -7,6 +7,7 @@ import com.extrawest.core.model.TicksHistory;
 import com.extrawest.core.repository.TicksHistoryRepository;
 import com.extrawest.core.repository.TicksRepository;
 import com.extrawest.core.service.KafkaConsumerService;
+import com.extrawest.core.service.TickerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class KafkaConsumerServiceImpl implements KafkaConsumerService {
     private final TicksHistoryRepository ticksHistoryRepository;
-    private final TickerServiceImpl tickerService;
+    private final TickerService tickerService;
     private final TicksRepository ticksRepository;
 
     @KafkaListener(id = "ticks",

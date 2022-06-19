@@ -13,10 +13,11 @@ import com.extrawest.core.repository.TickStatisticRepository;
 import com.extrawest.core.repository.TickerRepository;
 import com.extrawest.core.security.AuthenticationFacade;
 import com.extrawest.core.service.TickerService;
+import com.extrawest.core.service.UserService;
 import feign.FeignException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.PermissionDeniedDataAccessException;
+import org.springframework.context.annotation.Scope;
 import org.springframework.expression.AccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +25,13 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.nio.file.AccessDeniedException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Scope(scopeName = "singleton")
 @AllArgsConstructor
 @EnableScheduling
 @Slf4j
@@ -40,7 +41,7 @@ public class TickerServiceImpl implements TickerService {
 
     private final TickerMapper tickerMapper;
     private final TickerFeignClient tickerFeignClient;
-    private final UserServiceImpl userService;
+    private final UserService userService;
     private final TickStatisticRepository tickStatisticRepository;
     private final TickerSequenceGeneratorService tickerSequenceGeneratorService;
     private final AuthenticationFacade  authenticationFacade;
@@ -93,11 +94,11 @@ public class TickerServiceImpl implements TickerService {
     }
 
     @Override
-    public ResponseEntity<String> startTicker (int id, boolean isRestarting) throws AccessException {
+    public ResponseEntity<String> startTicker (int id) throws AccessException {
         Ticker ticker = tickerMapper.tickerIdToTicker(id);
         if (ticker != null) {
             if (checkThatCurrentUserIsOwner(ticker)) {
-                if (Status.ACTIVE != ticker.getStatus() || isRestarting) {
+                if (Status.ACTIVE != ticker.getStatus()) {
                     try {
                         tickerFeignClient.start(tickerMapper.tickerToTickerFeignDTO(ticker));
                         updateTickerStatus(ticker, Status.ACTIVE);
@@ -111,6 +112,14 @@ public class TickerServiceImpl implements TickerService {
             } else throw new AccessException("Can`t update the ticker, user is not owner");
         } return new ResponseEntity<>("Ticker with id: " + id + " not found", HttpStatus.NOT_FOUND);
     }
+
+    private void startTickerAfterRestarting(int id) {
+        Ticker ticker = tickerMapper.tickerIdToTicker(id);
+        if (ticker != null) {
+            tickerFeignClient.start(tickerMapper.tickerToTickerFeignDTO(ticker));
+        }
+    }
+
 
     @Override
     public ResponseEntity<String> stopTicker (int id) throws AccessException {
@@ -138,16 +147,22 @@ public class TickerServiceImpl implements TickerService {
         } else throw new AccessException("Can`t update the ticker, user is not owner");
     }
 
+    private void updateTickerStatusAfterRestarting(Ticker ticker, Status status) {
+            ticker.setStatus(status);
+            tickerRepository.save(ticker);
+    }
+
     private boolean checkThatCurrentUserIsOwner (Ticker ticker) {
         return authenticationFacade.getAuthentication().getName().equals(ticker.getOwner().getEmail());
     }
 
     @PostConstruct
-    private void init() throws AccessException {
+    private void init() {
         Collection<Ticker> activeTickersList = tickerRepository.findAllByStatus(Status.ACTIVE);
         for (Ticker tick : activeTickersList) {
             if (Status.ACTIVE == tick.getStatus()) {
-                startTicker(tick.getId(), true);
+                updateTickerStatusAfterRestarting(tick, Status.PAUSED);
+                startTickerAfterRestarting(tick.getId());
             }
         }
     }

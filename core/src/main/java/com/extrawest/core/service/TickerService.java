@@ -19,8 +19,8 @@ public interface TickerService {
     ResponseEntity<String> updateTickInterval(int id, TickerRequestDTO tickerRequestDTO);
     Optional<Ticker> getTickerById (int id);
     Collection<Ticker> getTickersByStatus (Status status);
-    ResponseEntity<?> startTicker (int id, boolean isRestarting) throws AccessException;
-    ResponseEntity<?> stopTicker (int id) throws AccessException;
+    ResponseEntity<String> startTicker (int id) throws AccessException;
+    ResponseEntity<String> stopTicker (int id) throws AccessException;
     void updateTickerStatus(Ticker ticker, Status status) throws AccessException;
     List<Ticker> findAllByOwner(String email);
 
