@@ -12,15 +12,16 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class TickerController {
 
+    private static final String REQUEST_HEADER_VALUE = "secretKey";
     private final TickerServiceImpl tickerService;
 
     @PostMapping(PathConstants.START_PATH)
-    public void start(@RequestBody TickerRequestDTO request) {
-        tickerService.start(request);
+    public void start(@RequestBody TickerRequestDTO request, @RequestHeader(value = REQUEST_HEADER_VALUE) String secretKey) {
+        tickerService.start(request, secretKey);
     }
 
     @PostMapping(PathConstants.STOP_PATH)
-    public void stop(@RequestBody TickerRequestDTO request) {
-        tickerService.stop(request);
+    public void stop(@RequestBody TickerRequestDTO request, @RequestHeader(value = REQUEST_HEADER_VALUE) String secretKey) {
+        tickerService.stop(request, secretKey);
     }
 }
