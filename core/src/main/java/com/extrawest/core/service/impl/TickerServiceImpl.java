@@ -2,10 +2,9 @@ package com.extrawest.core.service.impl;
 
 import com.extrawest.core.TickerFeignClient;
 import com.extrawest.core.dto.TickerDTO;
-import com.extrawest.core.dto.mapper.TickerMapStructMapper;
+import com.extrawest.core.dto.mapper.TickerMapper;
 import com.extrawest.core.dto.request.TickerRequestDTO;
 import com.extrawest.core.dto.response.TickerResponseDTO;
-import com.extrawest.core.dto.mapper.TickerMapper;
 import com.extrawest.core.model.Status;
 import com.extrawest.core.model.Tick;
 import com.extrawest.core.model.TickStatistic;
@@ -41,7 +40,6 @@ public class TickerServiceImpl implements TickerService {
     private final TickerRepository tickerRepository;
 
     private final TickerMapper tickerMapper;
-    private final TickerMapStructMapper tickerMapStructMapper;
     private final TickerFeignClient tickerFeignClient;
     private final UserService userService;
     private final TickStatisticRepository tickStatisticRepository;
@@ -60,10 +58,10 @@ public class TickerServiceImpl implements TickerService {
 
     @Override
     public TickerResponseDTO createTicker(TickerDTO tickerDTO) {
-        Ticker ticker = tickerMapper.tickerDTOToTicker(tickerDTO);
+        Ticker ticker = tickerMapper.toTicker(tickerDTO);
         ticker.setId(tickerSequenceGeneratorService.getSequenceNumber(Ticker.SEQUENCE));
         tickerRepository.save(ticker);
-        return tickerMapStructMapper.toTickerResponseDTO(ticker);
+        return tickerMapper.toTickerResponseDTO(ticker);
     }
 
     @Override
@@ -102,7 +100,7 @@ public class TickerServiceImpl implements TickerService {
             if (checkThatCurrentUserIsOwner(ticker)) {
                 if (Status.ACTIVE != ticker.getStatus()) {
                     try {
-                        tickerFeignClient.start(tickerMapStructMapper.toTickerFeignDTO(ticker));
+                        tickerFeignClient.start(tickerMapper.toTickerFeignDTO(ticker));
                         updateTickerStatus(ticker, Status.ACTIVE);
                         saveTickStatistic(ticker);
                         return new ResponseEntity<>("Run ticker: "+ ticker, HttpStatus.OK);
@@ -116,7 +114,7 @@ public class TickerServiceImpl implements TickerService {
     }
 
     private void startTickerAfterRestarting(int id) {
-        tickerRepository.getTickerById(id).ifPresent(ticker -> tickerFeignClient.start(tickerMapStructMapper.toTickerFeignDTO(ticker)));
+        tickerRepository.getTickerById(id).ifPresent(ticker -> tickerFeignClient.start(tickerMapper.toTickerFeignDTO(ticker)));
     }
 
 
@@ -126,7 +124,7 @@ public class TickerServiceImpl implements TickerService {
         if (ticker != null) {
             if (checkThatCurrentUserIsOwner(ticker)) {
                 try {
-                    tickerFeignClient.stop(tickerMapStructMapper.toTickerFeignDTO(ticker));
+                    tickerFeignClient.stop(tickerMapper.toTickerFeignDTO(ticker));
                     updateTickerStatus(ticker, Status.PAUSED);
                     saveTickStatistic(ticker);
                     return new ResponseEntity<>("Ticker with id: " + id + " stopped", HttpStatus.OK);
