@@ -5,10 +5,7 @@ import com.extrawest.core.dto.TickerDTO;
 import com.extrawest.core.dto.mapper.TickerMapper;
 import com.extrawest.core.dto.request.TickerRequestDTO;
 import com.extrawest.core.dto.response.TickerResponseDTO;
-import com.extrawest.core.model.Status;
-import com.extrawest.core.model.Tick;
-import com.extrawest.core.model.TickStatistic;
-import com.extrawest.core.model.Ticker;
+import com.extrawest.core.model.*;
 import com.extrawest.core.repository.TickStatisticRepository;
 import com.extrawest.core.repository.TickerRepository;
 import com.extrawest.core.security.AuthenticationFacade;
@@ -59,6 +56,8 @@ public class TickerServiceImpl implements TickerService {
     @Override
     public TickerResponseDTO createTicker(TickerDTO tickerDTO) {
         Ticker ticker = tickerMapper.toTicker(tickerDTO);
+        User user = userService.getUserByEmail(tickerDTO.getUserEmail()).orElseThrow();
+        ticker.setOwner(user);
         ticker.setId(tickerSequenceGeneratorService.getSequenceNumber(Ticker.SEQUENCE));
         tickerRepository.save(ticker);
         return tickerMapper.toTickerResponseDTO(ticker);

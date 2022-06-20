@@ -74,7 +74,7 @@ public class TickerStatisticRepository {
 
     public Map<Status, Integer> getActivePausedTickers(User user) {
 
-        Criteria criteria = Criteria.where("user").in(user).and("status").in("ACTIVE", "PAUSED");
+        Criteria criteria = Criteria.where("owner").in(user).and("status").in("ACTIVE", "PAUSED");
         MatchOperation matchStage = Aggregation.match(criteria);
         GroupOperation group = Aggregation.group("status").count().as("statusCount");
         ProjectionOperation projectionOperation = Aggregation.project("statusCount").and("status").previousOperation();
