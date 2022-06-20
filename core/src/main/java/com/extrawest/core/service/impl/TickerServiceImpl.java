@@ -2,6 +2,7 @@ package com.extrawest.core.service.impl;
 
 import com.extrawest.core.TickerFeignClient;
 import com.extrawest.core.dto.TickerDTO;
+import com.extrawest.core.dto.mapper.TickerMapStructMapper;
 import com.extrawest.core.dto.request.TickerRequestDTO;
 import com.extrawest.core.dto.response.TickerResponseDTO;
 import com.extrawest.core.dto.mapper.TickerMapper;
@@ -40,6 +41,7 @@ public class TickerServiceImpl implements TickerService {
     private final TickerRepository tickerRepository;
 
     private final TickerMapper tickerMapper;
+    private final TickerMapStructMapper tickerMapStructMapper;
     private final TickerFeignClient tickerFeignClient;
     private final UserService userService;
     private final TickStatisticRepository tickStatisticRepository;
@@ -61,7 +63,7 @@ public class TickerServiceImpl implements TickerService {
         Ticker ticker = tickerMapper.tickerDTOToTicker(tickerDTO);
         ticker.setId(tickerSequenceGeneratorService.getSequenceNumber(Ticker.SEQUENCE));
         tickerRepository.save(ticker);
-        return tickerMapper.tickerToTickerResponseDTO(ticker);
+        return tickerMapStructMapper.toTickerResponseDTO(ticker);
     }
 
     @Override
@@ -95,12 +97,12 @@ public class TickerServiceImpl implements TickerService {
 
     @Override
     public ResponseEntity<String> startTicker (int id) throws AccessException {
-        Ticker ticker = tickerMapper.tickerIdToTicker(id);
+        Ticker ticker = tickerRepository.getTickerById(id).orElse(null);
         if (ticker != null) {
             if (checkThatCurrentUserIsOwner(ticker)) {
                 if (Status.ACTIVE != ticker.getStatus()) {
                     try {
-                        tickerFeignClient.start(tickerMapper.tickerToTickerFeignDTO(ticker));
+                        tickerFeignClient.start(tickerMapStructMapper.toTickerFeignDTO(ticker));
                         updateTickerStatus(ticker, Status.ACTIVE);
                         saveTickStatistic(ticker);
                         return new ResponseEntity<>("Run ticker: "+ ticker, HttpStatus.OK);
@@ -114,20 +116,17 @@ public class TickerServiceImpl implements TickerService {
     }
 
     private void startTickerAfterRestarting(int id) {
-        Ticker ticker = tickerMapper.tickerIdToTicker(id);
-        if (ticker != null) {
-            tickerFeignClient.start(tickerMapper.tickerToTickerFeignDTO(ticker));
-        }
+        tickerRepository.getTickerById(id).ifPresent(ticker -> tickerFeignClient.start(tickerMapStructMapper.toTickerFeignDTO(ticker)));
     }
 
 
     @Override
     public ResponseEntity<String> stopTicker (int id) throws AccessException {
-        Ticker ticker = tickerMapper.tickerIdToTicker(id);
+        Ticker ticker = tickerRepository.getTickerById(id).orElse(null);
         if (ticker != null) {
             if (checkThatCurrentUserIsOwner(ticker)) {
                 try {
-                    tickerFeignClient.stop(tickerMapper.tickerToTickerFeignDTO(ticker));
+                    tickerFeignClient.stop(tickerMapStructMapper.toTickerFeignDTO(ticker));
                     updateTickerStatus(ticker, Status.PAUSED);
                     saveTickStatistic(ticker);
                     return new ResponseEntity<>("Ticker with id: " + id + " stopped", HttpStatus.OK);

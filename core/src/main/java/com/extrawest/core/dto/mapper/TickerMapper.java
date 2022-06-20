@@ -1,8 +1,6 @@
 package com.extrawest.core.dto.mapper;
 
 import com.extrawest.core.dto.TickerDTO;
-import com.extrawest.core.dto.response.TickerResponseDTO;
-import com.extrawest.core.dto.feign.TickerFeignDTO;
 import com.extrawest.core.model.Status;
 import com.extrawest.core.model.Tick;
 import com.extrawest.core.model.Ticker;
@@ -23,7 +21,6 @@ import java.util.Set;
 public class TickerMapper {
     private final AuthenticationFacade authenticationFacade;
     private final UserRepository userRepository;
-    private final TickerRepository tickerRepository;
 
     public Ticker tickerDTOToTicker(TickerDTO tickerDTO) {
         Set<Tick> ticks = new HashSet<>();
@@ -36,26 +33,4 @@ public class TickerMapper {
         ticker.setTicks(ticks);
         return ticker;
     }
-
-    public Ticker tickerIdToTicker(int id) {
-        Optional<Ticker> ticker = tickerRepository.getTickerById(id);
-        return ticker.orElse(null);
-    }
-
-    public TickerFeignDTO tickerToTickerFeignDTO (Ticker ticker) {
-        TickerFeignDTO tickerFeignDTO = new TickerFeignDTO();
-        tickerFeignDTO.setTickerId(ticker.getId());
-        tickerFeignDTO.setInterval(ticker.getTickInterval());
-        tickerFeignDTO.setUserEmail(ticker.getOwner().getEmail());
-        return tickerFeignDTO;
-    }
-
-    public TickerResponseDTO tickerToTickerResponseDTO (Ticker ticker) {
-        TickerResponseDTO tickerResponseDTO = new TickerResponseDTO();
-        tickerResponseDTO.setId(ticker.getId());
-        tickerResponseDTO.setTickInterval(ticker.getTickInterval());
-        tickerResponseDTO.setStatus(ticker.getStatus());
-        return tickerResponseDTO;
-    }
-
 }
